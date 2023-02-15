@@ -1,0 +1,141 @@
+#include <iostream>
+using namespace std;
+#include <bits/stdc++.h>
+#include <cassert>
+int main() {
+    char grid[9][9];//={'.','.','.','.','.','.','.','.','.'};
+    int n;
+    cout<<"Please, enter grid size ";
+    cin>>n;
+
+    assert(n<=9 && n>=3);
+    //making few directional arrays for specificic row , index , coulmn , d1 and d2
+
+    int start_row[100] , start_coulmn[100] , directional_row[100] ,directional_coulmn[100];
+    int verify =0 ; //to count each position can be called start row po , start col ,d1and d2
+
+    for(int r=0 ; r<n ;r++)//to verify each row and its step should be assigned in directional _row array
+    {
+        start_row[verify]=r;
+        start_coulmn[verify]=0;
+        directional_row[verify]=0;
+        directional_coulmn[verify]=1;
+        verify++;
+    }
+
+    for(int c=0 ; c<n ;c++)//to verify each coulmn and its step should be assigned in directional_coulmn array
+    {
+        start_row[verify]=0;
+        start_coulmn[verify]=c;
+        directional_row[verify]=1;
+        directional_coulmn[verify]=0;
+        verify++;
+    }
+
+
+    //verify the left diagonal
+    start_row[verify]=0 ,start_coulmn[verify]=0 ,directional_row[verify]=1 ,directional_coulmn[verify]=1;
+    verify++;
+
+    //verify the right diagonal
+    start_row[verify]=0 ,start_coulmn[verify]=n-1 ,directional_row[verify]=1,directional_coulmn[verify]=-1;
+    verify++;
+
+
+    for(int i=0;i<n;i++)
+    {
+        for(int j=0;j<n;j++)
+            grid[i][j]='.';
+    }
+    int count=0;
+    int  turn = 1;
+    while(true)
+    {
+        if(count==(n*n))
+        {
+            cout<<"Tie case \n";
+            break;
+        }
+        int r, c ;
+
+        if (turn == 1) {
+            cout << "Player x turn . Enter empty location (r, c):";
+            cin >> r >> c;
+            r--,c--;
+            if(grid[r][c]=='.' ) //valid case
+            {
+                grid[r][c] = 'x';
+                count++;
+            }
+            else // ( grid[r][c]=='x'  grid[r][c]=='o')
+            {
+                cout<<"Invalid input .Try again "<<endl;
+                continue; //in order to get the user new chance to try to put new value again
+            }
+
+        }
+
+
+        else if (turn == 0) //player o turn
+        {
+            cout << "Player o turn . Enter empty location (r, c): ";
+            cin >> r >> c;
+            r--,c--;
+
+            if(grid[r][c]=='.' ) //valid case
+            {
+                grid[r][c] = 'o';
+                count++;
+            }
+            else // (grid[r][c]=='x'  grid[r][c]=='o')
+            {
+                cout<<"Invalid input .Try again "<<endl;
+                continue;
+            }
+        }
+
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<n;j++)
+                cout<<grid[i][j];
+            cout<<endl;
+        }
+
+        //check winnners
+        for(int check=0;check<verify;check++)
+        {
+            int r=start_row[check] ,c=start_coulmn[check], dr=directional_row[check] ,dc=directional_coulmn[check];
+            char first=grid[r][c] ;
+            int cnt=0;
+
+            if(first=='.')
+                continue ;
+
+            //if variable first has x || or o char ,then we need to know if the the remaining cells of the the specific row,coulmn,d1,d2 has same symbol of first variavble or mot
+            for(int i=0 ;i<n;i++)
+            {
+                if(first==grid[r][c]) {
+                    cnt++, r += dr, c += dc;
+                }
+
+            }
+
+            if(cnt==n) //the row,coulmn,d1,d2 is completed ,then there is a winner now
+            {
+                cout<<"Player "<<first<<" won"<<endl;
+                return 0 ;
+            }
+
+
+
+        }
+       turn = !turn;
+
+
+    }
+
+
+
+    return 0;
+
+}
